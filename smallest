@@ -1,0 +1,19 @@
+--below line loads your data into relation
+student_details = LOAD '/user/std_details.txt' USING PigStorage(',') as (id:int,firstname:chararray,lastname:chararray,age:int,phone:chararray,city:chararray);
+
+-- Grouping the data based on City Names
+citygroup = GROUP student_details by city;
+
+--Iterating through the each bag of data to get the student's age
+ citydata = foreach citygroup GENERATE group,FLATTEN(student_details.age);
+ 
+-- Sorting by Asceding order so that the bag with least age will be on TOP
+order_data = ORDER citydata BY age ASC;
+
+--getting the first bag
+limit_data = LIMIT order_data 1;
+--using this you will be able to display the final output on screen.
+dump limit_data;
+
+
+
